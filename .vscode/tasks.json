@@ -1,29 +1,5 @@
 {
     "version": "2.0.0",
     "tasks": [
-        {
-            "label": "Run Home Assistant on port 8123",
-            "type": "shell",
-            "command": "scripts/develop",
-            "problemMatcher": []
-        },
-        {
-            "label": "Run Lint",
-            "type": "shell",
-            "command": "scripts/lint",
-            "problemMatcher": []
-        },
-        {
-            "label": "Run Unit Tests (Once)",
-            "type": "shell",
-            "command": "scripts/test",
-            "problemMatcher": []
-        },
-        {
-            "label": "Run Unit Tests (Watch)",
-            "type": "shell",
-            "command": "scripts/test --watch",
-            "problemMatcher": []
-        }
     ]
 }
