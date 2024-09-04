@@ -38,7 +38,6 @@ class SMAApiClient(SMABaseClient):
         host: str,
         username: str | None,
         password: str | None,
-        session: aiohttp.ClientSession,
         use_ssl: bool = True,
         request_timeout: int = 10,
         request_retries: int = 3,
@@ -47,7 +46,6 @@ class SMAApiClient(SMABaseClient):
         """SMA Data Manager M API Client."""
         super().__init__(
             host=host,
-            session=session,
             use_ssl=use_ssl,
             request_timeout=request_timeout,
             logger=logger,

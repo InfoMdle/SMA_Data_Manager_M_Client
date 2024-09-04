@@ -45,14 +45,13 @@ class SMABaseClient:
         self,
         host: str,
         use_ssl: bool,
-        session: aiohttp.ClientSession,
         request_timeout: int = 10,
         logger: Logger | None = None,
     ) -> None:
         """Initialize the client."""
         self._host = host
         self._base_url = f"http{'s' if use_ssl else ''}://{self._host}/api/v1"
-        self._session = session
+        self._session = aiohttp.ClientSession()
         self._request_timeout = request_timeout
 
         self._logger = logger if logger is not None else DummyLogger()
