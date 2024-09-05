@@ -81,6 +81,7 @@ class SMABaseClient:
                     json=data if as_json else None,
                     # Form-Data payload
                     data=data if not as_json else None,
+                    ssl=False
                 )
 
                 # remove any cookies set by the request, we handle them manually
