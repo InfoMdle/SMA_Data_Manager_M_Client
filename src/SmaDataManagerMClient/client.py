@@ -161,6 +161,8 @@ class SMAApiClient(SMABaseClient):
         async def _get_navigation_int(
             parent_id: str | None = None,
         ) -> list[ComponentInfo]:
+            await self.login()
+
             """Get data from /navigation endpoint."""
             self._logger.debug(f"getting navigation data for parent={parent_id}")
 
@@ -232,6 +234,8 @@ class SMAApiClient(SMABaseClient):
     async def get_all_live_measurements(
         self, component_ids: list[str]
     ) -> list[ChannelValues]:
+        await self.login()
+
         """Get live data for all channels of the requested components."""
         payload = [{"componentId": id} for id in component_ids]
 
@@ -253,6 +257,8 @@ class SMAApiClient(SMABaseClient):
     async def get_live_measurements(
         self, query: list[LiveMeasurementQueryItem]
     ) -> list[ChannelValues]:
+        await self.login()
+
         """Get live data for the requested channels."""
         payload = [item.to_dict() for item in query]
         measurements_response = await self.make_request(
