@@ -31,9 +31,9 @@ async def testfunction():
 
     while True:
         for measurement in await api.get_all_live_measurements(["Plant:1"]):
-            if measurement.channel_id == "Measurement.GridMs.TotW.Pv" :#and measurement.latest_value().value != last:
+            if measurement.channel_id == "Measurement.GridMs.TotW.Pv" and measurement.latest_value().time != last:
                 print(f"{measurement.latest_value().time} : {measurement.channel_id} - {measurement.latest_value().value}")
-                last = measurement.latest_value().value
+                last = measurement.latest_value().time
 
                 f = open("log.txt", "a")
                 f.write(f"{measurement.latest_value().time},{measurement.channel_id},{measurement.latest_value().value}\n")
