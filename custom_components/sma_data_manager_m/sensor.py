@@ -1,4 +1,5 @@
 from homeassistant.components.sensor import SensorEntity
+from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from .const import DOMAIN
 from .client import SMAApiClient
 
@@ -8,19 +9,22 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up SMA Data Manager sensors."""
-    # Vérifiez si cette config_entry est déjà configurée
-    if config_entry.entry_id in hass.data.get(DOMAIN, {}):
+    # Initialize hass.data for the domain if not already done
+    hass.data.setdefault(DOMAIN, {})
+
+    # Check if this config_entry is already configured
+    if config_entry.entry_id in hass.data[DOMAIN]:
         _LOGGER.warning(
-            f"Config entry {config_entry.title} ({config_entry.entry_id}) for {DOMAIN} has already been setup!"
+            f"Config entry {config_entry.title} ({config_entry.entry_id}) for {DOMAIN} has already been set up!"
         )
         return
 
-    # Marquez cette config_entry comme configurée
-    hass.data.setdefault(DOMAIN, {})[config_entry.entry_id] = True
+    # Mark this config_entry as configured
+    hass.data[DOMAIN][config_entry.entry_id] = True
 
-    host = config_entry.data["host"]
-    username = config_entry.data.get("username", "")
-    password = config_entry.data.get("password", "")
+    host = config_entry.data[CONF_HOST]
+    username = config_entry.data.get(CONF_USERNAME, "")
+    password = config_entry.data.get(CONF_PASSWORD, "")
     use_https = config_entry.data.get("use_https", False)
 
     # Initialize SMA client
@@ -39,8 +43,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     # Create a sensor for each component
     entities = []
     for component in components:
-        entities.append(SMASensor(client, component.name, component.component_id))
+        if "name" in component and "component_id" in component:
+            entities.append(SMASensor(client, component["name"], component["component_id"]))
+        else:
+            _LOGGER.warning(f"Skipping component with missing data: {component}")
 
+    _LOGGER.info(f"Adding {len(entities)} sensors to Home Assistant.")
     async_add_entities(entities)
 
 
@@ -64,17 +72,28 @@ class SMASensor(SensorEntity):
         """Return the current state of the sensor."""
         return self._state
 
+    @property
+    def unique_id(self):
+        """Return a unique ID for the sensor."""
+        return f"{self._client.host}_{self._component_id}"
+
+    @property
+    def should_poll(self):
+        """Indicate that updates are handled via async_update."""
+        return False
+
     async def async_update(self):
         """Fetch new state data for the sensor."""
         try:
             data = await self._client.get_live_measurements(
                 [{"componentId": self._component_id}]
             )
-            if data:
-                self._state = data[0].value  # Adjust based on API response structure
+            if data and isinstance(data, list) and "value" in data[0]:
+                self._state = data[0]["value"]
                 _LOGGER.debug(f"Updated sensor {self._name}: {self._state}")
             else:
-                _LOGGER.warning(f"No data received for sensor {self._name}")
+                _LOGGER.warning(f"Unexpected data format for sensor {self._name}: {data}")
+                self._state = None
         except Exception as e:
             _LOGGER.error(f"Failed to update sensor {self._name}: {e}")
             self._state = None
