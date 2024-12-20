@@ -1,5 +1,4 @@
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import DOMAIN
 from .client import SMAApiClient
 
@@ -9,17 +8,30 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up SMA Data Manager sensors."""
+    # Vérifiez si cette config_entry est déjà configurée
+    if config_entry.entry_id in hass.data.get(DOMAIN, {}):
+        _LOGGER.warning(
+            f"Config entry {config_entry.title} ({config_entry.entry_id}) for {DOMAIN} has already been setup!"
+        )
+        return
+
+    # Marquez cette config_entry comme configurée
+    hass.data.setdefault(DOMAIN, {})[config_entry.entry_id] = True
+
     host = config_entry.data["host"]
     username = config_entry.data.get("username", "")
     password = config_entry.data.get("password", "")
+    use_https = config_entry.data.get("use_https", False)
 
     # Initialize SMA client
-    client = SMAApiClient(host, username, password, use_ssl=False)
+    client = SMAApiClient(host, username, password, use_ssl=use_https)
+    _LOGGER.info(f"Initializing SMAApiClient for host {host} with HTTPS={use_https}")
 
     # Login and fetch initial data
     try:
         await client.login()
         components = await client.get_all_components()
+        _LOGGER.info(f"Fetched {len(components)} components from SMA Data Manager.")
     except Exception as e:
         _LOGGER.error(f"Failed to initialize SMA Data Manager: {e}")
         return
@@ -60,6 +72,9 @@ class SMASensor(SensorEntity):
             )
             if data:
                 self._state = data[0].value  # Adjust based on API response structure
+                _LOGGER.debug(f"Updated sensor {self._name}: {self._state}")
+            else:
+                _LOGGER.warning(f"No data received for sensor {self._name}")
         except Exception as e:
             _LOGGER.error(f"Failed to update sensor {self._name}: {e}")
             self._state = None

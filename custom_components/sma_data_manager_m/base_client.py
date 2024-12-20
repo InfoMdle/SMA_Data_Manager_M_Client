@@ -51,6 +51,8 @@ class SMABaseClient:
         """Initialize the client."""
         self._host = host
         self._base_url = f"http{'s' if use_ssl else ''}://{self._host}/api/v1"
+        if not use_ssl:
+          self._logger.warning("Using HTTP instead of HTTPS. Ensure the connection is secure.")
         self._session = aiohttp.ClientSession()
         self._request_timeout = request_timeout
 
