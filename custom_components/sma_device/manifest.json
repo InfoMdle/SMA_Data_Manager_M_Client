@@ -1,0 +1,10 @@
+{
+  "domain": "sma_device",
+  "name": "SMA Device Integration",
+  "version": "1.0.0",
+  "documentation": "https://github.com/InfoMdle/SMA_Data_Manager_M_Client",
+  "dependencies": [],
+  "codeowners": ["@InfoMdle"],
+  "requirements": ["aiohttp"],
+  "config_flow": true
+}
