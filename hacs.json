@@ -1,7 +1,10 @@
 {
-  "name": "SMA Data Manager M",
-  "content_in_root": false,
-  "domains": ["sma_data_manager_m"],
-  "homeassistant": "2021.6.0",
-  "render_readme": true
+  "name": "SMA Device Integration",
+  "domain": "sma_device",
+  "documentation": "https://github.com/InfoMdle/SMA_Data_Manager_M_Client",
+  "requirements": [],
+  "codeowners": ["@InfoMdle"],
+  "config_flow": true,
+  "iot_class": "cloud_polling",
+  "version": "1.0.0"
 }
