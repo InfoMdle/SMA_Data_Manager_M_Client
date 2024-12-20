@@ -1,1 +1,0 @@
-"""SMA Api client."""
