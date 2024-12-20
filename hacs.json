@@ -1,0 +1,7 @@
+{
+  "name": "SMA Data Manager M",
+  "content_in_root": false,
+  "domains": ["sma_data_manager_m"],
+  "homeassistant": "2021.6.0",
+  "render_readme": true
+}

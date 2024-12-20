@@ -1,0 +1,9 @@
+{
+  "domain": "sma_data_manager_m",
+  "name": "SMA Data Manager M",
+  "version": "1.0.0",
+  "documentation": "https://github.com/Tabisch/SMA_Data_Manager_M_Client",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@Tabisch"]
+}
