@@ -3,7 +3,8 @@
   "name": "SMA Data Manager M",
   "version": "1.0.0",
   "documentation": "https://github.com/Tabisch/SMA_Data_Manager_M_Client",
-  "requirements": [],
+  "requirements": ["aiohttp", "async_timeout"],
   "dependencies": [],
-  "codeowners": ["@Tabisch"]
+  "codeowners": ["@Tabisch"],
+  "config_flow": true
 }
