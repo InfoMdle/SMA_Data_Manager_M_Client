@@ -56,6 +56,9 @@ class SMABaseClient:
 
         self._logger = logger if logger is not None else DummyLogger()
 
+       # Log pour vérifier si HTTPS est activé
+        self._logger.debug(f"Initialized SMABaseClient with base_url: {self._base_url}")
+
     async def make_request(
         self,
         method: str,

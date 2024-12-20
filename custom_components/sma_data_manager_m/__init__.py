@@ -36,6 +36,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     _LOGGER.info(f"Use HTTPS: {use_https}")
 
     try:
+        # Initialisation de SMAApiClient avec HTTPS ou HTTP
         client = SMAApiClient(host, username, password, use_ssl=use_https)
         _LOGGER.info("SMAApiClient initialized successfully.")
     except Exception as e:
@@ -45,14 +46,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     # Stockez le client dans les données partagées
     hass.data[DOMAIN][entry.entry_id] = client
 
-    # Ajoutez les capteurs
+    # Ajoutez les capteurs avec un await (correction du warning async_forward_entry_setup)
     try:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, "sensor")
-        )
-        _LOGGER.info("Sensor setup task created.")
+        await hass.config_entries.async_forward_entry_setup(entry, "sensor")
+        _LOGGER.info("Sensor setup completed successfully.")
     except Exception as e:
-        _LOGGER.error(f"Error creating sensor setup task: {e}")
+        _LOGGER.error(f"Error during sensor setup: {e}")
         return False
 
     return True
