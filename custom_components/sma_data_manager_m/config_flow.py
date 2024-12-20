@@ -3,6 +3,9 @@ import voluptuous as vol
 
 from .const import DOMAIN
 
+import logging
+_LOGGER = logging.getLogger(__name__)
+
 @config_entries.HANDLERS.register(DOMAIN)
 class SMADataManagerMConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for SMA Data Manager M."""
@@ -24,6 +27,7 @@ class SMADataManagerMConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required("host"): str,
                 vol.Optional("username", default=""): str,
                 vol.Optional("password", default=""): str,
+                vol.Optional("use_https", default=False): bool,  # Case à cocher HTTPS
             }
         )
 
